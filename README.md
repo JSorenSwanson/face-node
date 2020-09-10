@@ -9,6 +9,7 @@
   <h4>Environment</h4>
   <p> Docker repository for this project can be found at https://hub.docker.com/repository/docker/nsoren/face-node. I won't be configuring automatic image building until our group understands how to use Docker as a group if we decide to utilize it.</p>
   <p>Development container image can be pulled using:
+    
   ```
   $ docker pull nsoren/face-node:init
   ```
@@ -16,14 +17,17 @@
 </div>
 <div align= "center">
   <h4>Training and Detection (relevant instructs from forked repo)</h4>
+  <div align="left">
   <p> 
-  0. Configuration
-  0.1. 
+  0. Configuration <br/>
+  0.1 <br/>
   First, you'll need to either configure your python environment locally or pull the linked Docker image environment (recommended.)
-  0.2. 
+  0.2 <br/>
   Once you've your container running and you're attached to it remotely, execute pip3 install -r requirements.txt to install python packages required by the modules. 
-
+  </div>
   1. Training
+  <div align="left">
+    
   ```
   $ python3 train_mask_detector.py --dataset dataset
   ```
@@ -31,12 +35,14 @@
   ```
   $ python3 detect_mask_video.py 
   ```
+  </div>
   </p>
   <h4>Direction</h4>
+  <div align="left">
   <p>
     We'll start using this project scaffold to modify and improve the existing face detection model to serve our application requirements in our first iteration.
   </p>
-
+  </div>
 </div>
 
 ## :+1: Credits
