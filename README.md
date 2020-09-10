@@ -25,9 +25,9 @@
   0.2 <br/>
   Once you've your container running and you're attached to it remotely, execute pip3 install -r requirements.txt to install python packages required by the modules. 
   </div>
-  1. Training
   <div align="left">
-    
+  1. Training
+  
   ```
   $ python3 train_mask_detector.py --dataset dataset
   ```
