@@ -8,9 +8,9 @@
 <div align= "center">
   <h4>Environment</h4>
   <p> Docker repository for this project can be found at https://hub.docker.com/repository/docker/nsoren/face-node. I won't be configuring automatic image building until our group understands how to use Docker as a group if we decide to utilize it.</p>
-  <p>Latest development container image can be pulled using:
+  <p>Development container image can be pulled using:
   ```
-  docker pull nsoren/face-node:init
+  $ docker pull nsoren/face-node:init
   ```
    </p>
 </div>
