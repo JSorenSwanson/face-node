@@ -23,26 +23,28 @@
    </p>
 </div>
 <div align= "center">
-  <h4></h4>
   <div align="left">
-  <p> 
   <h4>0. Configuration</h4>
-  0.1
-  First, you'll need to either configure your python environment locally or pull the linked Docker image environment (recommended.)
-  0.2 
+  <p> 
+  <b>0.1</b>
+  First, you'll need to either configure your python environment locally or pull the linked Docker image environment (recommended.)<br/>
+  <b>0.2</b> 
   Once you've your container running and you're attached to it remotely, execute this in the root container volume directory:
-    
-    pip3 install -r requirements.txt 
   
+  ```
+  $ pip3 install -r requirements.txt 
+  ```
   </div>
   <div align="left">
   
-  <h4>1. Training and Detection (relevant instructs from forked repo)</h4>
+  <h4>1. Training (relevant instructs from forked repo)</h4>
 
   ```
   $ python3 train_mask_detector.py --dataset dataset
   ```
-  2. Detection (see notes in detect_mask_video.py)
+  <h4> 2. Detection (see notes in detect_mask_video.py)</h4>
+  <i>Check comments in detect_mask_video.py for notes on configuring OpenCV call to buffer frame data from VideoStream.</i> 
+
   ```
   $ python3 detect_mask_video.py 
   ```
