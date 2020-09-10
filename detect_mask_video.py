@@ -7,6 +7,7 @@ from tensorflow.keras.preprocessing.image import img_to_array
 from tensorflow.keras.models import load_model
 from imutils.video import VideoStream
 import numpy as np
+import urllib
 import argparse
 import imutils
 import time
@@ -99,8 +100,23 @@ maskNet = load_model(args["model"])
 
 # initialize the video stream and allow the camera sensor to warm up
 print("[INFO] starting video stream...")
-vs = VideoStream(src=0).start()
-time.sleep(2.0)
+
+
+##### JUMPING OFF --
+
+##### Broad/narrow
+## Python threading? Do each .py run as individual threads. Maybe we spin up a Buffer.py for each 
+## I'm a fan of using an n:many relationship of these backend containers hitting ip camera streams on a per-network basis to avoid encoding.
+## The "node-head" applications can asyncronously send information to a central location to pool information hierarchially. 
+
+###### POC
+## We'll need to hit an API endpoint on our db layer which returns a list of (for now) hardcoded or manually stored endpoints. 
+## Eventually, our frontend application will be able to provide CRUD for these endpoints for viewing, creation and statistic gathering. 
+## For POC the endpoint will only return the list of hardcoded intranet points of ip cams the application lives in. 
+
+###### If you'd like to test this with a camera attached to your machine, use (-1/0 (int)) – broken in WSL 
+vs = VideoStream(src="http://host.docker.internal:49152/video.mjpg?q=100&fps=100&id=0.7587060853631462&r=1599663296819").start()
+time.sleep(10.0) # let's see if we can even hit the endpoint over ip in docker
 
 # loop over the frames from the video stream
 while True:
@@ -111,6 +127,7 @@ while True:
 
 	# detect faces in the frame and determine if they are wearing a
 	# face mask or not
+
 	(locs, preds) = detect_and_predict_mask(frame, faceNet, maskNet)
 
 	# loop over the detected face locations and their corresponding
@@ -119,7 +136,7 @@ while True:
 		# unpack the bounding box and predictions
 		(startX, startY, endX, endY) = box
 		(mask, withoutMask) = pred
-
+		
 		# determine the class label and color we'll use to draw
 		# the bounding box and text
 		label = "Mask" if mask > withoutMask else "No Mask"
