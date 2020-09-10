@@ -30,13 +30,17 @@
   First, you'll need to either configure your python environment locally or pull the linked Docker image environment (recommended.)<br/>
   <b>0.2</b> 
   Once you've your container running and you're attached to it remotely, execute this in the root container volume directory:
-  
+
   ```
   $ pip3 install -r requirements.txt 
   ```
   </div>
-  <div align="left">
+</br>
+  <b>0.3</b>
+  You'll need a version of x-server running on your local machine -- OpenCV imutils package will use this display server to create the image window for video output. 
+  A windows (vcxsrv) implementation that works with WSL can be found @ https://sourceforge.net/projects/vcxsrv/. 
   
+  <div align="left">
   <h4>1. Training (relevant instructs from forked repo)</h4>
 
   ```
