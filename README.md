@@ -21,10 +21,10 @@
   $ docker-compose run {SERVICE}
   ```
 
-TODO: FINISH THIS README WITH TEAM
-  Services are defined in docker-compose.yml and are defined as: 
-  eye_buffer: Recognition
-  flask_rack: Lightweight webserver 
+ <b>TODO: </b>FINISH THIS README WITH TEAM
+  Services are defined in docker-compose.yml and are defined as:</br>
+  eye_buffer: Recognition instances </br>
+  flask_rack: Lightweight webserver instances </br>
   train_station: Model training 
    </p>
 </div>
@@ -56,7 +56,7 @@ TODO: FINISH THIS README WITH TEAM
   ```
   </div>
   </p>
-  <h4>~Direction</h4>
+  <h4>Direction</h4>
   <div align="left">
   <p>
     We'll start using this project scaffold to modify and improve the existing face detection model to serve our application requirements in our first iteration.
