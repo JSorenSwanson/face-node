@@ -10,16 +10,22 @@
 <div align= "center">
   <h4>Environment</h4>
    <div align="left">
-  <p> Docker repository for this project can be found at https://hub.docker.com/repository/docker/nsoren/face-node. I won't be configuring automatic image building until our group understands how to use Docker as a group if we decide to utilize it.</p>
+  <p> Docker repository for this project can be found at https://hub.docker.com/repository/docker/nsoren/face-node. I won't be configuring automatic image building until our group understands how to use Docker as a group.</p>
      
    https://code.visualstudio.com/docs/remote/containers-tutorial
   
-  <p>Development container image can be pulled using:
+  <p>Containers can then be executed as services from project root directory via:
   </div>
-    
+
   ```
-  $ docker pull nsoren/face-node:init
+  $ docker-compose run {SERVICE}
   ```
+
+TODO: FINISH THIS README WITH TEAM
+  Services are defined in docker-compose.yml and are defined as: 
+  eye_buffer: Recognition
+  flask_rack: Lightweight webserver 
+  train_station: Model training 
    </p>
 </div>
 <div align= "center">
@@ -30,17 +36,13 @@
   First, you'll need to either configure your python environment locally or pull the linked Docker image environment (recommended.)<br/>
   <b>0.2</b> 
   Once you've your container running and you're attached to it remotely, execute this in the root container volume directory:
-
+  
   ```
   $ pip3 install -r requirements.txt 
   ```
   </div>
-</br>
-  <b>0.3</b>
-  You'll need a version of x-server running on your local machine -- OpenCV imutils package will use this display server to create the image window for video output. 
-  A windows (vcxsrv) implementation that works with WSL can be found @ https://sourceforge.net/projects/vcxsrv/. 
-  
   <div align="left">
+  
   <h4>1. Training (relevant instructs from forked repo)</h4>
 
   ```

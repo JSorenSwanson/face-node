@@ -1,0 +1,22 @@
+version: '3'
+services:
+    buffer_eye:
+        image: 'nsoren/face-node:init'
+        env_file: 
+            - .env/dev-vars.env  
+    flask:
+        build: flask_rack/
+        ports:
+            - "5000:5000"
+    redis:
+        image: "redis:alpine"
+    tftrain:
+        build: "train_station/"
+        deploy:
+            resources:
+                limits:
+                    cpus: '2'
+                    memory: 6g
+        env_file: 
+        - .env/dev-vars.env  
+        
