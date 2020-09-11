@@ -25,9 +25,9 @@ RUN apt-get update && apt-get upgrade -y \
 # Expose a port just to remember we can. 
 EXPOSE 5000
 # Slap a quick dir into container fs before we copy context over
-WORKDIR /dev
-# Install container py package dependencies
-RUN pip3 install -r requirements.txt
+RUN mkdir /develop
+WORKDIR /develop
 # Shoot context over to Daemon @ dir level
 COPY . .
-#RUN ./cuda/extractcuda.sh
+# Install container py package dependencies
+RUN pip3 install -r requirements.txt

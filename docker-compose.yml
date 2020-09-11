@@ -1,7 +1,7 @@
 version: '3'
 services:
-    buffer_eye:
-        image: 'nsoren/face-node:init'
+    eyebuffer:
+        build: 'eye_buffer/'
         env_file: 
             - .env/dev-vars.env  
     flask:
@@ -19,4 +19,4 @@ services:
                     memory: 6g
         env_file: 
         - .env/dev-vars.env  
-        
+         
