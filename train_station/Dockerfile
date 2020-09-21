@@ -1,6 +1,9 @@
-## Training environment
-ARG vers=16.04
-FROM ubuntu:${vers}
+# Training environment
+# Pull NVIDIA base layer for Cuda compatibility w/ Tensorflow
+ARG vers=10.1-cudnn7-runtime-ubuntu18.04
+FROM nvidia/cuda:${vers}
+# Fix TZDATA hang in Ubuntu
+ARG DEBIAN_FRONTEND=noninteractive
 ENV LANG C.UTF-8
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
@@ -18,6 +21,8 @@ RUN apt-get update && apt-get upgrade -y \
     curl \
     software-properties-common \ 
     apt-transport-https \
+    python3-distutils \
+    python3-apt \
     && curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py \
     && python3 get-pip.py \
     && pip3 -v
