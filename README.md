@@ -25,7 +25,7 @@
   Services are defined in docker-compose.yml and are defined as:</br>
   eye_buffer: Recognition instances </br>
   flask_rack: Lightweight webserver instances </br>
-  train_station: Model training 
+  train_station: Model training instance
    </p>
 </div>
 <div align= "center">

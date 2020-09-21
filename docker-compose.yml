@@ -1,4 +1,4 @@
-version: '3'
+version: '2.3'
 services:
     eyebuffer:
         build: 'eye_buffer/'
@@ -10,13 +10,21 @@ services:
             - "5000:5000"
     redis:
         image: "redis:alpine"
+    # Meant to be ran on a system other than Windows to avoid paravirtualization issues w/ GPU resources under WSL. 
+    # I include this here as a reference in case you'd like to use GPU resources for model training.
+    # Requires docker-compose vers. >= 1.19.0
+    # Resources definition means this container will use (ceil) 3 cpu cores, 28gb ram.
     tftrain:
         build: "train_station/"
+        ports:
+            - "5000:5000"
+        runtime: nvidia 
+        environment:
+        - NVIDIA_VISIBLE_DEVICES=all
         deploy:
             resources:
                 limits:
-                    cpus: '2'
-                    memory: 6g
+                    cpus: '3'
+                    memory: 29g
         env_file: 
-        - .env/dev-vars.env  
-         
+        - .env/dev-vars.env
