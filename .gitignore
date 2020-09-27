@@ -1,8 +1,7 @@
 # virt envs, envs gen'd by shell scripts
 venv
 nvidia-docker/
-.vscode/
-#train_station/dataset/with_mask/*
-#train_station/dataset/without_mask/*
+.svscode/
+train_station/dataset/*
 #train_station/dataset/without_mask_narrow
 *.deb 

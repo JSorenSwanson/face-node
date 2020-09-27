@@ -1,15 +1,34 @@
-version: '2.3'
+version: '3.8'
 services:
+    frontend:
+        build: 'frontend_web/' 
+        ports:
+            - "8080:8080"
+            - "8000:8000"
+        environment: 
+            - CHOKIDAR_USEPOLLING=true
+            - PORT=8080 
+            - HOST=0.0.0.0
+        volumes:
+            - ./frontend_web:/frontend-app
+            - /frontend-app/node_modules
     eyebuffer:
         build: 'eye_buffer/'
         env_file: 
-            - .env/dev-vars.env  
+            - .env/dev-vars.env
     flask:
+        depends_on: 
+            - redis
         build: flask_rack/
         ports:
             - "5000:5000"
     redis:
         image: "redis:alpine"
+        expose: 
+            - "6379"
+        ports: 
+            - "6379:6379"
+
     # Meant to be ran on a system other than Windows to avoid paravirtualization issues w/ GPU resources under WSL. 
     # I include this here as a reference in case you'd like to use GPU resources for model training.
     # Requires docker-compose vers. >= 1.19.0
