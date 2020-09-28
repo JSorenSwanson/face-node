@@ -1,6 +1,6 @@
 <template>
-  <div class="about">
-    <HelloWorld msg="About Team 5"/>
+  <div class="dashboard">
+    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
   </div>
 </template>
 
@@ -13,5 +13,5 @@ import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
     HelloWorld,
   },
 })
-export default class About extends Vue {}
+export default class Dashboard extends Vue {}
 </script>
