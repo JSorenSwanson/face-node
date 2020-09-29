@@ -41,10 +41,12 @@
     name: 'Sidebar',
     data: () => ({
        items: [
-          { title: 'Dashboard', icon: 'mdi-view-dashboard', route:"/" },
+          { title: 'Dashboard', icon: 'mdi-view-dashboard', route:"/dashboard" },
           { title: 'Account', icon: 'mdi-account-circle', route:"/account"  },
           { title: 'Settings', icon: 'mdi-cog-box', route:"/node-settings"  },
+          { title: 'Cluster Settings', icon: 'mdi-table-network', route:"/cluster-settings"  },
           { title: 'About', icon: 'mdi-help-box', route:"/about"  },
+         
         ]
     }),
   })

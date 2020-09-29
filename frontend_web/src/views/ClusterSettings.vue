@@ -7,14 +7,19 @@
          <v-card> 
             <v-tabs>
                 <v-tab>
-                    Node Description
+                    Cluster Description
                 </v-tab>
                 <v-tab-item>
                     <v-container>
                            <v-col cols=12>
-                                    <v-text-field :counter="15" label="Node Name" required></v-text-field>
+                                <v-select
+                                    :items="clusteritems"
+                                    label="Select Cluster Group"
+                                    outlined
+                                  ></v-select>
+                                    <v-text-field :counter="15" label="Cluster Name" required></v-text-field>
                                      <v-textarea
-                                        label="Node Description"
+                                        label="Cluster Description"
                                         counter
                                         maxlength="120"
                                         full-width
@@ -29,7 +34,7 @@
                     </v-container>
                 </v-tab-item>
                 <v-tab>
-                   Node Settings
+                   Cluster Settings
                 </v-tab>
                 <v-tab-item>
                     <v-container>
@@ -37,12 +42,12 @@
                                 <v-col cols=12>
                                    <v-select
                                     :items="resitems"
-                                    label="Resolution"
+                                    label="Cluster Resolution"
                                     outlined
                                   ></v-select>
                                   <v-select
                                     :items="fpsitems"
-                                    label="Framerate"
+                                    label="Cluster Framerate"
                                     outlined
                                   ></v-select>
                                    <v-slider
@@ -73,13 +78,13 @@ import { Component, Vue } from 'vue-property-decorator';
 
 @Component({
   components: {
-  
+   
   },
 })
-export default class NodeSettings extends Vue {
-  
+export default class ClusterSettings extends Vue {
+    clusteritems= ['Libraries','Restaraunts', 'Tattoo Studios', 'ServiceIndustry']
    resitems= ['1080p', '720p', '480p', '360p']
     fpsitems= ['60', '59', '30', '15']
-    ex3= { label: 'Alert Threshold: ', val: 50, color: 'blue' }
+    ex3= { label: 'Alert Threshold: ', val: 65, color: 'green' }
 }
 </script>

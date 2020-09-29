@@ -49,31 +49,27 @@
       msg: {
         type: String,
         required: false,
-        default: "This app uses Vuetify"
+        default: "About our Application"
       }
     },
     data: () => ({
       importantLinks: [
         {
-          text: 'Documentation',
+          text: 'Vuetify',
           href: 'https://vuetifyjs.com',
         },
         {
-          text: 'Chat',
-          href: 'https://community.vuetifyjs.com',
+          text: 'GitHub Repository',
+          href: 'https://github.com/JSorenSwanson/face-node',
         },
         {
-          text: 'Made with Vuetify',
-          href: 'https://madewithvuejs.com/vuetify',
+          text: 'Vue',
+          href: 'https://vuejs.org/v2/api/',
         },
         {
-          text: 'Twitter',
-          href: 'https://twitter.com/vuetifyjs',
-        },
-        {
-          text: 'Articles',
-          href: 'https://medium.com/vuetify',
-        },
+          text: 'Docker',
+          href: 'https://docs.docker.com/get-started/',
+        }
       ],
     }),
   })
