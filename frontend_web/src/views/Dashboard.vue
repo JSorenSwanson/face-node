@@ -24,15 +24,15 @@
           <v-col
             v-for="n in 9"
             :key="n"
-            cols="4"
+            cols=4
           >
           <!-- Example of nested conditional rendering in Vue. --> 
           <div v-if="n===1 || n===2">
             <div v-if="n===1">
-              <titlecard title="Mansfield Tattoo"></titlecard>
+              <titlecard title="UT Arlington Library" editable></titlecard>
             </div>
             <div v-else>
-              <titlecard title="UT Arlington Library"></titlecard>
+              <titlecard title="Mansfield Tattoo" editable></titlecard>
             </div>
           </div>
           <div v-else>

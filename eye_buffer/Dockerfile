@@ -25,9 +25,9 @@ RUN apt-get update && apt-get upgrade -y \
 # Expose a port just to remember we can. 
 EXPOSE 5000
 # Slap a quick dir into container fs before we copy context over
-RUN mkdir /develop
-WORKDIR /develop
+WORKDIR /buffer
 # Shoot context over to Daemon @ dir level
 COPY . .
 # Install container py package dependencies
 RUN pip3 install -r requirements.txt
+CMD ["python3","detect_mask_video.py"]

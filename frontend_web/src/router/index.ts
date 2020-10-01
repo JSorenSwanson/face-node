@@ -7,6 +7,7 @@ import Account from '../views/Account.vue'
 import NodeSettings from '../views/NodeSettings.vue'
 import NodeDetails from '../views/NodeDetails.vue'
 import ClusterSettings from '../views/ClusterSettings.vue'
+import CreateNode from '../views/CreateNode.vue'
 
 Vue.use(VueRouter)
 
@@ -28,9 +29,14 @@ const routes: Array<RouteConfig> = [
     component: Account
   }, 
   {
-    path: '/node-settings',
+    path: '/node-settings/:id',
     name: 'Settings',
     component: NodeSettings
+  },
+  {
+    path: '/create-node',
+    name: 'Create Node',
+    component: CreateNode
   },
   {
     path: '/about',

@@ -82,9 +82,9 @@ import { Component, Vue } from 'vue-property-decorator';
   },
 })
 export default class ClusterSettings extends Vue {
-    clusteritems= ['Libraries','Restaraunts', 'Tattoo Studios', 'ServiceIndustry']
+    clusteritems= ['Libraries','Restaraunts', 'Tattoo Studios', 'Service Industry']
    resitems= ['1080p', '720p', '480p', '360p']
     fpsitems= ['60', '59', '30', '15']
-    ex3= { label: 'Alert Threshold: ', val: 65, color: 'green' }
+    ex3= { label: 'Confidence Threshold: ', val: 65, color: 'green' }
 }
 </script>
