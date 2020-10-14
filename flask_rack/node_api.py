@@ -11,7 +11,7 @@ from services.node_service import *
 # In next iteration, we will utilize marshmallow-flask-sqlalchemy to automate schema generation from our ORM definitions(!)
 _node_settings_schema = NodeSettingsSchema()
 
-# Flask and api doc genedockration
+# Flask and api doc
 from flask import Flask, jsonify, request, abort
 # Support CORS on endpoints
 from flask_cors import *
@@ -24,9 +24,13 @@ flaskID = 'NodeFlask'
 
 logging.getLogger('flask_cors').level = logging.DEBUG
 
+
+@_flask.route('/')
+def hello_world(): 
+    return 'Hello from inside our Docker container!'
+
 ### Flask API endpoint definitions – Expect request payloads to be JSON serialized for brevity. 
 # Create node settings (to Redis cache) along nodeid:settings(JSON)
-
 @_flask.route('/api/node/', methods=['POST'])
 #@cross_origin() -- atomic cross_origin grants
 def create_settings():

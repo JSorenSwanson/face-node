@@ -3,6 +3,7 @@
 # Our redis service in docker-compose is listed as a dependency for this flask instance, which ensures a 'redis' 
 # hostserver is instantiated. 
 import redis 
+import time 
 
 # you'll notice our redis container is named 'redis' and is exposed along port 6379 in our docker-compose.yml manifest.
 _cache = redis.Redis(host='redis', port=6379)
@@ -18,9 +19,9 @@ def increment_key(key, n=1):
         try:
             return _cache.incr(key, n)
         except redis.exceptions.ConnectionError as exc:
-            if retries == 0:
+            if retry_ms == 0:
                 raise exc
-            retries -= 1
+            retry_ms -= 1
             time.sleep(1)
 
 # SETS value of key in our redis cache
@@ -32,9 +33,9 @@ def set_keyval(key,val):
         try:
             return _cache.set(key,val)
         except redis.exceptions.ConnectionError as exc:
-            if retries == 0:
+            if retry_ms == 0:
                 raise exc
-            retries -= 1
+            retry_ms -= 1
             time.sleep(1)
 
 # SETS value of key in our redis cache
@@ -46,7 +47,7 @@ def get_keyval(key):
         try:
             return _cache.get(key)
         except redis.exceptions.ConnectionError as exc:
-            if retries == 0:
+            if retry_ms == 0:
                 raise exc
-            retries -= 1
+            retry_ms -= 1
             time.sleep(1)

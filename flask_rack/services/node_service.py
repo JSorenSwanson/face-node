@@ -1,5 +1,5 @@
 # Our cache-server (redis) service (lightweight keystore) (redis-services.py)
-from .redis_service import *
+from .redis_service import get_keyval, set_keyval, increment_key
 import json 
 
 def increment_node(node_id):
@@ -10,6 +10,6 @@ def increment_node(node_id):
 def create_node_settings(nodeid,settings):
     set_keyval(nodeid,json.dumps(settings))
 
-# Naíve SET, assumes we've performed validation on input. 
+# Naíve GET, assumes we've performed validation on input. 
 def get_node_settings(node_id):
     return get_keyval(node_id)
