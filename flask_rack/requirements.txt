@@ -1,2 +1,4 @@
 flask
+marshmallow
 redis
+flask_cors

@@ -1,19 +1,44 @@
-version: '2.3'
+version: '3.8'
 services:
+    frontend:
+        build: 'frontend_web/' 
+        ports:
+            - "8080:8080"
+            - "8000:8000"
+        environment: 
+            - CHOKIDAR_USEPOLLING=true
+            - PORT=8080 
+            - HOST=0.0.0.0
+        volumes:
+            - ./frontend_web:/frontend-app
+            - /frontend-app/node_modules
     eyebuffer:
         build: 'eye_buffer/'
         env_file: 
-            - .env/dev-vars.env  
+            - .env/dev-vars.env
+        volumes:
+            - ./eye_buffer:/buffer
     flask:
+        depends_on: 
+            - redis
         build: flask_rack/
+        expose: 
+            - "5000"
         ports:
             - "5000:5000"
+        volumes:
+            - ./flask_rack:/flasks
     redis:
-        image: "redis:alpine"
+        image: "redislabs/rejson"
+        expose: 
+            - "6379"
+        ports: 
+            - "6379:6379"
+
     # Meant to be ran on a system other than Windows to avoid paravirtualization issues w/ GPU resources under WSL. 
     # I include this here as a reference in case you'd like to use GPU resources for model training.
     # Requires docker-compose vers. >= 1.19.0
-    # Resources definition means this container will use (ceil) 3 cpu cores, 28gb ram.
+    # Resources definition means this container will use (ceil) 3 cpu cores, 64gb ram.
     tftrain:
         build: "train_station/"
         ports:
@@ -25,6 +50,6 @@ services:
             resources:
                 limits:
                     cpus: '3'
-                    memory: 29g
+                    memory: 64g
         env_file: 
         - .env/dev-vars.env
