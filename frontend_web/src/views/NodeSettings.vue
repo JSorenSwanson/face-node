@@ -146,7 +146,7 @@ export default class NodeSettings extends Vue {
       const data = this.createNodeInput
       this.syncPromise = true;
       
-      NodeDataService.create(data)
+      NodeDataService.update(data)
         .then((response) => {
           this.syncPromise = false;
           this.promiseResult = "Successfully created Node.";
@@ -155,6 +155,24 @@ export default class NodeSettings extends Vue {
         .catch((e) => {
           this.syncPromise = false;
           this.promiseResult = "FAILED to create Node.\n" + e;
+          console.log(e);
+          this.resultBar = true;
+        });
+    }
+
+    deleteNode() {
+      // copied from saveNode but invokes delete rather than update
+      const data = this.createNodeInput
+      
+      NodeDataService.delete(data)
+        .then((response) => {
+          this.syncPromise = false;
+          this.promiseResult = "Successfully deleted Node.";
+          this.resultBar = true;
+        })
+        .catch((e) => {
+          this.syncPromise = false;
+          this.promiseResult = "FAILED to delete Node.\n" + e;
           console.log(e);
           this.resultBar = true;
         });

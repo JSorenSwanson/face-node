@@ -22,12 +22,19 @@ class NodeDataService {
     return http.get(`/node/${query}`)
   }
 
+  // update node data
+  update(data: any) {
+    return http.put("/node/", data);
+  }
+
+  // delete node data
+  delete(data: any) {
+    return http.delete("/node/", data);
+  }
+
   // Some other operations we'll be interested in
   /*
-  update
-
-  delete
-
+  
   */
 }
 
