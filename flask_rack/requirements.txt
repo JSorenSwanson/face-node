@@ -2,3 +2,5 @@ flask
 marshmallow
 redis
 flask_cors
+flask-sqlalchemy==2.4.4
+psycopg2

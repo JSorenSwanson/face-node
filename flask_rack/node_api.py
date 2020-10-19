@@ -13,16 +13,25 @@ _node_settings_schema = NodeSettingsSchema()
 
 # Flask and api doc
 from flask import Flask, jsonify, request, abort
+
 # Support CORS on endpoints
 from flask_cors import *
 
 # Flask, cors instances
 _flask = Flask(__name__)
 CORS(_flask)
-_flask.config['CORS_HEADERS'] = 'Content-Type'
+_flask.config.from_object("config.Config")
 flaskID = 'NodeFlask'
 
 logging.getLogger('flask_cors').level = logging.DEBUG
+
+# Update this to import the ORM objects in models.py
+from models import db, QuickQueries, User, NodeObject, NodeCameraResolution, NodeActivityEntry
+
+# Initialize database instance (PostgreSQL)
+_flask.app_context().push()
+db.init_app(_flask)
+db.create_all()
 
 
 @_flask.route('/')

@@ -1,5 +1,6 @@
 version: '3.8'
 services:
+
     frontend:
         build: 'frontend_web/' 
         ports:
@@ -12,28 +13,47 @@ services:
         volumes:
             - ./frontend_web:/frontend-app
             - /frontend-app/node_modules
+
     eyebuffer:
         build: 'eye_buffer/'
         env_file: 
             - .env/dev-vars.env
         volumes:
             - ./eye_buffer:/buffer
+
     flask:
         depends_on: 
             - redis
+            - db
         build: flask_rack/
         expose: 
             - "5000"
         ports:
             - "5000:5000"
+        env_file: .env/flask-vars.env
         volumes:
             - ./flask_rack:/flasks
+
     redis:
         image: "redislabs/rejson"
         expose: 
             - "6379"
         ports: 
             - "6379:6379"
+
+    db:
+        container_name: postgres
+        image: postgres:13.0-alpine
+        expose:
+            - "5432"
+        ports:
+            - "5432:5432"
+        environment:
+            - POSTGRES_USER=user
+            - POSTGRES_PASSWORD=password
+            - POSTGRES_DB=example
+        volumes:
+            - dbdata:/var/lib/postgresql
 
     # Meant to be ran on a system other than Windows to avoid paravirtualization issues w/ GPU resources under WSL. 
     # I include this here as a reference in case you'd like to use GPU resources for model training.
@@ -53,3 +73,6 @@ services:
                     memory: 64g
         env_file: 
         - .env/dev-vars.env
+
+volumes:
+    dbdata:
