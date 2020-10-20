@@ -8,8 +8,8 @@ class NodeDataService {
     return http.get("/node");
   }
   // return node data by id
-  get(nodeid: string) {
-    return http.get(`/nodesettings/${nodeid}`);
+  get(nodeid: string, jwt: any) {
+    return http.get(`/nodesettings/${nodeid}`,{ headers: { Authorization: `Bearer: ${jwt}` } });
   }
   // insert/update node data (form data serialized as JSON)
   create(data: any, jwt: any) {

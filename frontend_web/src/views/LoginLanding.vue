@@ -152,6 +152,7 @@ export default class Dashboard extends Vue {
           this.syncPromise = false;
           this.promiseResult = response.message;
           this.resultBar = true;
+          // Instead of clumsily grabbing fields from `any` let's statically type our response.
           const authenticated = response.authenticated;
           if(authenticated)
             this.$router.push('/dashboard')
@@ -171,9 +172,6 @@ export default class Dashboard extends Vue {
           this.syncPromise = false;
           this.promiseResult = "Successfully registered!";
           this.resultBar = true;
-          const authenticated = response.authenticated;
-          if(authenticated)
-            this.$router.push('/dashboard')
         })
         .catch((e) => {
           this.syncPromise = false;

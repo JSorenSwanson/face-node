@@ -145,7 +145,7 @@ export default class NodeSettings extends Vue {
       // If we weren't utilizing all fields, we could prune this object into a Data Transfer Object. 
       const data = this.createNodeInput
       this.syncPromise = true;
-      const jwtToken = this.$store.getters.getJWT;
+      const jwtToken = this.$store.getters.getJWT.token;
 
       NodeDataService.create(data, jwtToken)
         .then((response) => {
@@ -167,8 +167,9 @@ export default class NodeSettings extends Vue {
       // Build JSON object we'll be 
       // If we weren't utilizing all fields, we could prune this object into a Data Transfer Object. 
       this.syncPromise = true;
-    
-      NodeDataService.get(this.id)
+      const jwtToken = this.$store.getters.getJWT.token;
+
+      NodeDataService.get(this.id, jwtToken)
         .then((response) => {
           // Check your console -- our response is a JSON object. 
           // Chrome allows you to inspect this dumped mem. 

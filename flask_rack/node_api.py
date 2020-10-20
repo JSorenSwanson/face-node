@@ -5,6 +5,7 @@ node_api.py serves as a lightweight py httpserver
 import time
 import jwt
 import json
+import logging
 from functools import wraps
 from datetime import datetime, timedelta
 from models import NodeObject, NodeCameraResolution, NodeActivityEntry, User, pdb
@@ -57,14 +58,18 @@ def auth_required(_fn):
         
         try:
             jwt_token = headers[1]
-            jwt = jwt_token.decode(jwt_token, current_app.config['SECRET_KEY'])
-            user_result = User.query.filter_by(email= jwt['sub']).first()
+            jwtd = jwt.decode(jwt_token, current_app.config['SECRET_KEY'])
+            #DEBUG TOKEN DECODE
+            logging.warning('Protected request against token{\n[[%s]]\n(d)[%s]\nSUB=[%s]}', jwt_token, jwtd, jwtd['sub'])
+            user_result = User.query.filter_by(email= jwtd['sub']).first()
             if not user_result:
-                raise RuntimeError('No user found with email address: ' + jwt['sub'])
-            return _fn(user_result, *args, **kwargs)
+                raise RuntimeError('No user found with email address: ' + jwtd['sub'])
+            return _fn(*args, **kwargs)
         except jwt.ExpiredSignatureError:
+            logging.warning('Expired token in request!')
             return jsonify(msg_expired), 401
         except (jwt.InvalidTokenError, Exception) as ex:
+            logging.warning('Invalid token in request – %s',ex)
             return jsonify(msg_error), 401
     return authorize
 

@@ -29,10 +29,10 @@
           <!-- Example of nested conditional rendering in Vue. --> 
           <div v-if="n===1 || n===2">
             <div v-if="n===1">
-              <titlecard title="UT Arlington Library" editable></titlecard>
+              <titlecard title="UT Arlington Library" :editable='isAuthenticated'></titlecard>
             </div>
             <div v-else>
-              <titlecard title="Mansfield Tattoo" editable></titlecard>
+              <titlecard title="Mansfield Tattoo" :editable='isAuthenticated'></titlecard>
             </div>
           </div>
           <div v-else>
@@ -52,7 +52,11 @@ import titlecard from '@/components/container/TitleCard.vue';
   components: {
     titlecard
   },
+  computed:{
+    isAuthenticated: function(){
+      return this.$store.getters.authenticated;
+    }
+  }
 })
-
 export default class Dashboard extends Vue {}
 </script>

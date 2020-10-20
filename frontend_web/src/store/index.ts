@@ -4,15 +4,16 @@ import UserDataService from '@/services/UserDataService';
 import { isValidJwt } from '@/utils/GlobalUtils'
 
 Vue.use(Vuex)
+Vue.config.devtools = true
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
   state: {
     user: {},
     jwt: ''
   },
   mutations: {
     setUserData (state, payload) {
-      state.user = payload.user
+      state.user = {'email':payload.userData.email}
     },
     setJwtToken (state, payload) {
       localStorage.token = payload.jwt.token
@@ -21,6 +22,7 @@ export default new Vuex.Store({
   },
   actions: {
     login (context, userData) {
+      console.log(userData);
       context.commit('setUserData', { userData })
       return UserDataService.login(userData)
         .then(response => {
@@ -59,12 +61,14 @@ export default new Vuex.Store({
     }
   },
   getters:{
-    isAuthenticated: state=> {
+    authenticated: (state) => {
+      // Again, jwt should be statically typed. 
       return isValidJwt(state.jwt)
     },
-    getJWT: state=> {
+    getJWT: (state) => {
       return isValidJwt(state.jwt) == true ? state.jwt : null
     }
   }
  
 })
+export default store;
