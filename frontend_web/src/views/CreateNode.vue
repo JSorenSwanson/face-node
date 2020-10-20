@@ -195,10 +195,11 @@ export default class CreateNode extends Vue {
     saveNode() {
       // Build JSON object we'll be 
       // If we weren't utilizing all fields, we could prune this object into a Data Transfer Object. 
-      const data = this.createNodeInput
+      const data = this.createNodeInput;
       this.syncPromise = true;
-       
-      NodeDataService.create(data)
+      const jwtToken = this.$store.getters.getJWT;
+
+      NodeDataService.create(data, jwtToken)
         .then((response) => {
           this.syncPromise = false;
           this.promiseResult = "Successfully created Node.";

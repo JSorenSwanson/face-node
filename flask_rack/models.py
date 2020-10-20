@@ -1,33 +1,68 @@
-# Extension for Flask: Flask-SQLAlchemy
-# Flask-SQLAlchemy lets us define database objects in models.py
+"""
+ Extension for Flask: Flask-SQLAlchemy
+ Flask-SQLAlchemy lets us define database objects in models.py
+"""
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
+pdb = SQLAlchemy()
 
-db = SQLAlchemy()
+class User(pdb.Model):
+    """
+    User class used by flask-sqlalchemy ORM to generate DB migrations
+    This class is used for validation using marshmallow-sqlalchemy
+    """
+    # Define name for table built from ORM migration
+    __tablename__ = 'User'
 
-class User(db.Model):
+    # Define table fields, types/restrictions
+    uid = pdb.Column(pdb.Integer, primary_key=True)
+    username = pdb.Column(pdb.String(25), nullable=False)
+    email = pdb.Column(pdb.String(320), unique=True, nullable=False)
+    password = pdb.Column(pdb.String(10000), nullable=False)
+    # TODO – define relationships between Users and Nodes
 
-    __tablename__ = 'users'
+    # Define initialization behavior for Users
+    def __init__(self, email, password, username):
+        self.username = username
+        self.email = email
+        self.password = generate_password_hash(password, method='sha256')
 
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
+    @classmethod
+    def auth(cls, **kwargs):
+        """
+        Defines method for User which checks hashed password against associated email address
+        """
+        email = kwargs.get('email')
+        password = kwargs.get('password')
+    
+        if not email or not password:
+            return None
 
-    def __repr__(self):
-        return '<User: {}>'.format(self.username)
+        user = cls.query.filter_by(email=email).first()
+        if not user or not check_password_hash(user.password, password):
+            return None
 
-class NodeObject(db.Model):
+        return user
 
-    __tablename__ = 'allNodes'
+    def email_map(self):
+        """
+        Return map of UserID->UserEmail
+        """
+        return dict(id=self.uid, email=self.email)
 
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(25))
-    desc = db.Column(db.String(100))
-    ip = db.Column(db.String(15))
-    fps = db.Column(db.Integer)
-    resID = db.Column(db.Integer, db.ForeignKey('res.id'))
-    res = db.relationship('NodeCameraResolution', backref=db.backref('allNodes', uselist=False))
-    activity = db.relationship('NodeActivityEntry', backref='allNodes')
-    location = db.Column(db.String(80))
+class NodeObject(pdb.Model):
+
+    __tablename__ = 'Node'
+
+    id = pdb.Column(pdb.Integer, primary_key=True)
+    name = pdb.Column(pdb.String(25))
+    desc = pdb.Column(pdb.String(100))
+    ip = pdb.Column(pdb.String(15))
+    fps = pdb.Column(pdb.Integer)
+    resID = pdb.Column(pdb.Integer, pdb.ForeignKey('res.id'))
+    res = pdb.relationship('NodeCameraResolution', backref=pdb.backref('Node', uselist=False))
+    activity = pdb.relationship('NodeActivityEntry', backref='Node')
+    location = pdb.Column(pdb.String(80))
 
     def __repr__(self):
         return '<Name: {}>'.format(self.name)
@@ -44,29 +79,30 @@ class NodeObject(db.Model):
             'desc': self.desc
         }
 
-class NodeCameraResolution(db.Model):
+class NodeCameraResolution(pdb.Model):
 
     __tablename__ = 'res'
 
-    id = db.Column(db.Integer, primary_key=True)
-    pixelsX = db.Column(db.Integer)
-    pixelsY = db.Column(db.Integer)
+    id = pdb.Column(pdb.Integer, primary_key=True)
+    pixelsX = pdb.Column(pdb.Integer)
+    pixelsY = pdb.Column(pdb.Integer)
 
     def __repr__(self):
         return '<pixelsX: {}, pixelsY: {}>'.format(self.pixelsX, self.pixelsY)
 
-class NodeActivityEntry(db.Model):
+class NodeActivityEntry(pdb.Model):
 
     __tablename__ = 'activityEntries'
 
-    id = db.Column(db.Integer, primary_key=True)
-    counter = db.Column(db.Integer)
-    parentNodeID = db.Column(db.Integer, db.ForeignKey('allNodes.id'))
+    id = pdb.Column(pdb.Integer, primary_key=True)
+    counter = pdb.Column(pdb.Integer)
+    parentNodeID = pdb.Column(pdb.Integer, pdb.ForeignKey('Node.id'))
 
     def __repr__(self):
         return '<Statistic: {}>'.format(self.counter)
 
-class QuickQueries:
+# Boilerplate pseducode reference 
+"""class QuickQueries:
     def get_all(model):
         data = model.query.all()
         return data
@@ -92,3 +128,4 @@ class QuickQueries:
 
     def commit_changes():
         db.session.commit()
+"""

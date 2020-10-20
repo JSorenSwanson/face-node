@@ -12,8 +12,8 @@ class NodeDataService {
     return http.get(`/nodesettings/${nodeid}`);
   }
   // insert/update node data (form data serialized as JSON)
-  create(data: any) {
-    return http.post("/node/", data);
+  create(data: any, jwt: any) {
+    return http.post("/node/", data, { headers: { Authorization: `Bearer: ${jwt}` } });
   }
   
   // return nodes with metadata contained in search field 

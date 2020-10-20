@@ -53,7 +53,7 @@ services:
             - POSTGRES_PASSWORD=password
             - POSTGRES_DB=example
         volumes:
-            - dbdata:/var/lib/postgresql
+            - ./dbdata:/var/lib/postgresql
 
     # Meant to be ran on a system other than Windows to avoid paravirtualization issues w/ GPU resources under WSL. 
     # I include this here as a reference in case you'd like to use GPU resources for model training.
