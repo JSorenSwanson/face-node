@@ -30,6 +30,7 @@ import RandomChart from '@/components/charts/RandomChart.vue'; // @ is an alias 
 
 /* Example of instance vars. Ideally this will be retrieved from our store rather than clumsily set here.
    for static demonstration this will do. */ 
+  
 export default class NodeDetails extends Vue {
    id: string = this.$route.params.id
 

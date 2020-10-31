@@ -11,6 +11,10 @@ from datetime import datetime, timedelta
 from models import NodeObject, NodeCameraResolution, NodeActivityEntry, User, pdb
 from flask import Flask, Blueprint, current_app, jsonify, request, abort
 
+# Import Marshmallow schemas, functs
+from schemas import UserSchema, LoginSchema
+from marshmallow import ValidationError
+
 # Import functions from service wrappers
 from node_service import create_node_settings, get_node_settings, increment_node
 from user_service import add_user
@@ -28,7 +32,9 @@ _flask.app_context().push()
 pdb.init_app(_flask)
 pdb.create_all()
 
-
+# Generate Marshmallow Schema objects for validation
+user_schema = UserSchema()
+login_schema = LoginSchema() 
 
 ###############################################################################################
 ### Flask API endpoint definitions – Expect request payloads to be JSON serialized for brevity.
@@ -55,7 +61,7 @@ def auth_required(_fn):
         }
         if len(headers) < 2:
             return jsonify(msg_error), 401
-        
+          
         try:
             jwt_token = headers[1]
             jwtd = jwt.decode(jwt_token, current_app.config['SECRET_KEY'])
@@ -80,9 +86,15 @@ def register_user():
     Inserts a user into psql db via flask-sqlalchemy ORM
     """
     payload = request.get_json()
-    user = User(**payload)
-    add_user(user)
-    return jsonify(user.email_map()), 201
+    if not payload:
+        return {"message":"No input data provided."}, 400
+    try:
+        user_data = user_schema.load(payload, session=pdb)
+    except ValidationError as ex:
+        return ex.messages, 422
+        
+    add_user(user_data)
+    return jsonify(user_data.email_map()), 201
 
 @_flask.route('/api/user/login', methods=['POST'])
 def validate_user():
@@ -91,9 +103,16 @@ def validate_user():
     If valid, return JWT token
     """
     payload = request.get_json()
+    if not payload:
+        return {"message":"No input data provided."}, 400
+    try:
+        login_schema.load(payload, session=pdb)
+    except ValidationError as ex:
+        return ex.messages, 422
+
     uvalid = User.auth(**payload)
     if not uvalid:
-        return jsonify({ 'message': 'Bad user information.\nCheck E-Mail and password!'}), 401
+        return jsonify({ 'message': 'Bad username and/or password.'}), 401
     jwt_token = jwt.encode({
         'sub': uvalid.email,
         'exp': datetime.utcnow() + timedelta(minutes=60),
