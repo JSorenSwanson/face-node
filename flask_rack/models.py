@@ -51,81 +51,58 @@ class User(pdb.Model):
         return dict(id=self.uid, email=self.email)
 
 class NodeObject(pdb.Model):
-
+    """
+    Node class used by flask-sqlalchemy ORM to generate DB migrations
+    This class is used for validation using marshmallow-sqlalchemy
+    """
     __tablename__ = 'Node'
 
     id = pdb.Column(pdb.Integer, primary_key=True)
-    name = pdb.Column(pdb.String(25))
-    desc = pdb.Column(pdb.String(100))
-    ip = pdb.Column(pdb.String(15))
-    fps = pdb.Column(pdb.Integer)
-    resID = pdb.Column(pdb.Integer, pdb.ForeignKey('res.id'))
-    res = pdb.relationship('NodeCameraResolution', backref=pdb.backref('Node', uselist=False))
-    activity = pdb.relationship('NodeActivityEntry', backref='Node')
+    name = pdb.Column(pdb.String(25), nullable=False, unique=True)
+    description = pdb.Column(pdb.String(100))
+    nodeSettingsID = pdb.Column(pdb.Integer, pdb.ForeignKey('NodeSettings.id'))
+    nodeSettings = pdb.relationship('NodeSettings', backref=pdb.backref('Node', uselist=False))
     location = pdb.Column(pdb.String(80))
 
     def __repr__(self):
         return '<Name: {}>'.format(self.name)
 
-    def export_all_data(self):
+    def VERB(self):
         return {
+            'nodeID': self.id,
             'name': self.name,
-            'desc': self.desc
+            'description': self.description,
+            'location': self.location
         }
 
-    def export_DTO(self):
+    def DTO(self):
         return {
+            'nodeID': self.id,
             'name': self.name,
-            'desc': self.desc
+            'description': self.description,
+            'location': self.location
         }
 
-class NodeCameraResolution(pdb.Model):
-
-    __tablename__ = 'res'
-
+class NodeSettings(pdb.Model):
+    """
+    NodeSettings class used by flask-sqlalchemy ORM to generate DB migrations
+    This class is used for validation using marshmallow-sqlalchemy
+    """
+    __tablename__ = 'NodeSettings'
+ 
     id = pdb.Column(pdb.Integer, primary_key=True)
-    pixelsX = pdb.Column(pdb.Integer)
-    pixelsY = pdb.Column(pdb.Integer)
+    resolution = pdb.Column(pdb.String(15))
+    ip = pdb.Column(pdb.String(15), nullable=False, unique=True)
+    fps = pdb.Column(pdb.Integer)
+    confidence = pdb.Column(pdb.Integer)
 
-    def __repr__(self):
-        return '<pixelsX: {}, pixelsY: {}>'.format(self.pixelsX, self.pixelsY)
-
-class NodeActivityEntry(pdb.Model):
-
-    __tablename__ = 'activityEntries'
-
-    id = pdb.Column(pdb.Integer, primary_key=True)
-    counter = pdb.Column(pdb.Integer)
-    parentNodeID = pdb.Column(pdb.Integer, pdb.ForeignKey('Node.id'))
-
-    def __repr__(self):
-        return '<Statistic: {}>'.format(self.counter)
-
-# Boilerplate pseducode reference 
-"""class QuickQueries:
-    def get_all(model):
-        data = model.query.all()
-        return data
-
-
-    def add_instance(model, **kwargs):
-        instance = model(**kwargs)
-        db.session.add(instance)
-        commit_changes()
-
-
-    def delete_instance(model, id):
-        model.query.filter_by(id=id).delete()
-        commit_changes()
-
-
-    def edit_instance(model, id, **kwargs):
-        instance = model.query.filter_by(id=id).all()[0]
-        for attr, new_value in kwargs.items():
-            setattr(instance, attr, new_value)
-        commit_changes()
-
-
-    def commit_changes():
-        db.session.commit()
-"""
+    def VERB(self):
+        return {
+            'resolution': {
+                'pixelsX':self.pixelsX,
+                'pixelsY':self.pixelsY
+                },
+            'ip': self.ip,
+            'fps': self.fps, 
+            'confidence': self.confidence
+        }

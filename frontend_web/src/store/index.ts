@@ -6,9 +6,10 @@ import { isValidJwt } from '@/utils/GlobalUtils'
 Vue.use(Vuex)
 Vue.config.devtools = true
 
-const store = new Vuex.Store({
+export default new Vuex.Store({
   state: {
     user: {},
+    nodeEndpoints: {},
     jwt: ''
   },
   mutations: {
@@ -71,4 +72,3 @@ const store = new Vuex.Store({
   }
  
 })
-export default store;

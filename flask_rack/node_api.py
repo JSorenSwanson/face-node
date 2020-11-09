@@ -8,7 +8,7 @@ import json
 import logging
 from functools import wraps
 from datetime import datetime, timedelta
-from models import NodeObject, NodeCameraResolution, NodeActivityEntry, User, pdb
+from models import NodeObject, NodeSettings, User, pdb
 from flask import Flask, Blueprint, current_app, jsonify, request, abort
 
 # Import Marshmallow schemas, functs
@@ -16,7 +16,7 @@ from schemas import UserSchema, LoginSchema
 from marshmallow import ValidationError
 
 # Import functions from service wrappers
-from node_service import create_node_settings, get_node_settings, increment_node
+from node_service import create_node_settings, get_node_settings, get_node, get_nodes
 from user_service import add_user
 
 # Support CORS on endpoints
@@ -125,17 +125,16 @@ def validate_user():
 
 
 @_flask.route('/api/node/', methods=['POST'])
-@auth_required
-def create_settings():
+#@auth_required
+def create_node():
     """
     Create node settings entity along nodeID
     """
     payload = request.get_json()
-    create_node_settings(payload['node_id'], payload)
-    return 'Successfully updated node settings.'
+    return create_node_settings(payload)
 
 @_flask.route('/api/nodesettings/<node_id>', methods=['GET'])
-@auth_required
+#@auth_required
 def get_settings(node_id):
     """
     Return node settings along given node_id (PK)
@@ -148,7 +147,7 @@ def get_all_nodes():
     """
     Retrieve a JSON-serialized list of Node entities from postgres service using ORM framework
     """
-    return 'retrieving all nodes...'
+    return get_nodes()
 
 
 @_flask.route('/api/node/<node_id>')
@@ -156,8 +155,4 @@ def get_node_byid(node_id):
     """
     Retrieve JSON-serialized representation of Node entity from postgres service along node_id (PK)
     """
-    # create a time for the event here, we'll eventually store in our redis keystore along our key. 
-    eventTime = datetime.now().strftime("%H:%M:%S")
-    # increments keystore val along node_id 
-    ncount = increment_node(node_id)
-    return 'Node <b><u>{}</u></b> has seen {} masks at {}.'.format(node_id, ncount, eventTime)
+    return get_node(node_id)

@@ -15,6 +15,9 @@ services:
             - /frontend-app/node_modules
 
     eyebuffer:
+        depends_on:
+            - redis
+            - db
         build: 'eye_buffer/'
         env_file: 
             - .env/dev-vars.env
@@ -35,7 +38,7 @@ services:
             - ./flask_rack:/flasks
 
     redis:
-        image: "redislabs/rejson"
+        image: "redislabs/redistimeseries"
         expose: 
             - "6379"
         ports: 

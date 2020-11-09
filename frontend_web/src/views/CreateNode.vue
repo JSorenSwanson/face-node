@@ -19,15 +19,15 @@
               </v-stepper-step>
 
               <v-stepper-content step="1">
-                 <v-text-field :counter="15" 
-                 v-model="createNodeInput.node_id"
+                 <v-text-field 
+                 v-model="createNodeInput.name"
                   label="Node Name" required>
                   </v-text-field>
                 <v-textarea
-                    v-model="createNodeInput.note"
+                    v-model="createNodeInput.description"
                     label="Node Description"
                     counter
-                    maxlength="120"
+                    maxlength="500"
                     full-width
                     single-line
                     outlined
@@ -69,7 +69,14 @@
                                         ></v-select>
                                       </v-col>
                                     </v-row>
-                                    
+                                    <v-row>
+                                      <v-col cols=12>
+                                         <v-text-field 
+                                           v-model="createNodeInput.ip"
+                                           label="Network Location" required>
+                                          </v-text-field>
+                                      </v-col>
+                                    </v-row>
                                     <v-slider
                                         v-model="ex3.val"
                                         :label="ex3.label"
@@ -179,23 +186,22 @@ export default class CreateNode extends Vue {
     ex3= { label: 'Confidence Threshold: ', val: 50, color: 'blue' }
     saved=false; 
 
-  // Type representing our input model
-  // We'll eventually organize these into domains for clarity. 
-  // SNEAKY quick/dirty: node_id is our TITLE, shortcut. 
-  // Eventually we'll need to generate a GUID
   private createNodeInput = {
-       note:"Central Library is open to current UTA students, faculty, and staff only.",
-       node_id:"UT Arlington Library",
+       
+       description:"",
+       name:"",
+       location:"",
        ip:"localhost",
        fps:"60",
-       res:"1080p",
-       location:"Arlington, Tx"
+       res:"1080p", 
+       confidence:0
     };
     
     saveNode() {
       // Build JSON object we'll be 
       // If we weren't utilizing all fields, we could prune this object into a Data Transfer Object. 
       const data = this.createNodeInput;
+      data.confidence = this.ex3.val;
       this.syncPromise = true;
       const jwtToken = this.$store.getters.getJWT.token;
 
@@ -208,8 +214,8 @@ export default class CreateNode extends Vue {
         })
         .catch((e) => {
           this.syncPromise = false;
-          this.promiseResult = "FAILED to create Node.\n" + e;
-          console.log(e);
+          this.promiseResult = "FAILED: " + e;
+          console.log(e.message);
           this.resultBar = true;
         });
     }

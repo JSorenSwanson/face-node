@@ -5,7 +5,10 @@
  which ensures 'redis' hostserver is instantiated.
 """
 import redis 
+import rejson import Client, Path
 import time 
-from postgres_service import add_entity, delete_entity
+
 # you'll notice our redis container is named 'redis' and is exposed along port 6379 in our docker-compose.yml manifest.
-_cache = redis.Redis(host='redis', port=6379)
+cache_ = redis.Redis(host='redis', port=6379)
+retry_ms = 1000 # total retry time (in milliseconds)
+

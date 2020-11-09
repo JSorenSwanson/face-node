@@ -3,6 +3,7 @@ marshmallow
 flask-marshmallow
 marshmallow-sqlalchemy
 redis
+redistimeseries
 flask_cors
 flask-sqlalchemy==2.4.4
 PyJWT
