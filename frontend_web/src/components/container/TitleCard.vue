@@ -9,14 +9,12 @@
               {{title}}  
           </v-col>
           <div v-if="this.editable">
-            <v-row cols=6 align="right" justify="right" style="margin-right:5%">
+            <v-row cols=6  style="margin-right:5%">
               <v-btn
                 color="primary"
-                
                 small
                 dark
                 @click=redirectEdit
-               
               >
                 <v-icon>mdi-cog</v-icon>
               </v-btn>
