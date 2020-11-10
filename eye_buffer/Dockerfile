@@ -1,7 +1,8 @@
 ## Face detection module
 ## This image can be slimmed down before we deploy it in order to save $$/
 ARG vers=16.04
-FROM ubuntu:${vers}
+#FROM ubuntu:${vers}
+FROM python:3.8-slim-buster
 ENV LANG C.UTF-8
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH

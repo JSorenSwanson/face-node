@@ -6,6 +6,7 @@ from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 from tensorflow.keras.preprocessing.image import img_to_array
 from tensorflow.keras.models import load_model
 from imutils.video import VideoStream
+from redis_service import generate_series, log_event, get_event_log, get_log_range, get_log_aggregate
 import numpy as np
 import urllib
 import argparse
@@ -87,6 +88,9 @@ ap.add_argument("-c", "--confidence", type=float, default=0.5,
 	help="minimum probability to filter weak detections")
 args = vars(ap.parse_args())
 
+print("[INFO] Generating TimeSeries instance for Node")
+generate_series('Node0')
+
 # CAFFE
 # load our serialized face detector model from disk 
 print("[INFO] loading face detector model...")
@@ -101,43 +105,50 @@ maskNet = load_model(args["model"])
 
 # initialize the video stream and allow the camera sensor to warm up
 print("[INFO] starting video stream...")
-
-
-##### JUMPING OFF --
-
-##### Broad/narrow
-## Python threading? Do each .py run as individual threads. Maybe we spin up a Buffer.py for each 
-## I'm a fan of using an n:many relationship of these backend containers hitting ip camera streams on a per-network basis to avoid encoding.
-## The "node-head" applications can asyncronously send information to a central location to pool information hierarchically. 
-
-###### POC
-## We'll need to hit an API endpoint on our db layer which returns a list of (for now) hardcoded or manually stored endpoints. 
-## Eventually, our frontend application will be able to provide CRUD for these endpoints for viewing, creation and statistic gathering. 
-## For POC the endpoint will only return the list of hardcoded intranet points of ip cams the application lives in. 
-
 ###### If you'd like to test this with a camera attached to your machine, use (-1/0 (int)) – broken in WSL 
-vs = VideoStream(src="http://192.168.1.167:49152/video.mjpg?q=100&fps=100&id=0.7587060853631462&r=1599663296819").start()
+vs = VideoStream(src="http://192.168.1.71:49152/video.mjpg?q=100&fps=100&id=0.7587060853631462&r=1599663296819").start()
 time.sleep(10.0) # let's see if we can even hit the endpoint over ip in docker
+
+snapshot = int(round(time.time() * 1000))
+heartbeat = 2000
+
+# counters
+c_masks = 0
+c_faces = 0
 
 # loop over the frames from the video stream
 while True:
+	
 	# grab the frame from the threaded video stream and resize it
 	# to have a maximum width of 400 pixels
 	frame = vs.read()
 	frame = imutils.resize(frame, width=400)
-
-	# detect faces in the frame and determine if they are wearing a
-	# face mask or not
-
+	# Pass frame through each net
 	(locs, preds) = detect_and_predict_mask(frame, faceNet, maskNet)
+
+	# Push counter state to RedisTimeSeries service if heartbeat > delta since last snapshot.
+	t_inner = int(round(time.time() * 1000))
+	if (t_inner-snapshot) > heartbeat:
+		snapshot = int(round(time.time() * 1000))
+		log_event(c_faces, c_masks,'Node0')
+		print('DATA: {}', get_event_log('Node0'))
+		c_masks = c_faces = 0
 
 	# loop over the detected face locations and their corresponding
 	# locations
+	
+	n_masks = n_faces = 0
 	for (box, pred) in zip(locs, preds):
 		# unpack the bounding box and predictions
 		(startX, startY, endX, endY) = box
 		(mask, withoutMask) = pred
 		
+		if mask > withoutMask:
+			n_masks += 1
+		else:
+			n_faces += 1
+			
+
 		# determine the class label and color we'll use to draw
 		# the bounding box and text
 		label = "Mask" if mask > withoutMask else "No Mask"
@@ -151,15 +162,21 @@ while True:
 		cv2.putText(frame, label, (startX, startY - 10),
 			cv2.FONT_HERSHEY_SIMPLEX, 0.45, color, 2)
 		cv2.rectangle(frame, (startX, startY), (endX, endY), color, 2)
-
+	
+	c_masks = n_masks if (c_masks != n_masks) else c_masks
+	c_faces = n_faces if (n_faces != c_faces) else c_faces
+	
 	# show the output frame
 	cv2.imshow("Frame", frame)
 	key = cv2.waitKey(1) & 0xFF
-
 	# if the `q` key was pressed, break from the loop
 	if key == ord("q"):
 		break
 
-# do a bit of cleanup
+
+
+print('Range{}', get_log_range('Node0', 0, -1))
+print('Aggregate(AVG)@5000ms {}', get_log_aggregate('Node0', 0, -1, 'avg',5000))
+print('Aggregate(SUM)@5000ms {}', get_log_aggregate('Node0', 0, -1, 'sum',5000))
 cv2.destroyAllWindows()
 vs.stop()

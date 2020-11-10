@@ -5,3 +5,4 @@ train_station/dataset/*
 *.deb 
 db-vars.env
 dbdata/
+eye_buffer/mask_detector.model.new
