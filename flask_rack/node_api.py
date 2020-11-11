@@ -18,6 +18,7 @@ from marshmallow import ValidationError
 # Import functions from service wrappers
 from node_service import create_node_settings, get_node_settings, get_node, get_nodes
 from user_service import add_user
+from redis_service import get_log_range, get_log_aggregate
 
 # Support CORS on endpoints
 from flask_cors import CORS
@@ -156,3 +157,17 @@ def get_node_byid(node_id):
     Retrieve JSON-serialized representation of Node entity from postgres service along node_id (PK)
     """
     return get_node(node_id)
+
+# These endpoints should be coalesced into a single POST w/ schema 
+@_flask.route('/api/node/activity/<node_id>')
+def get_node_activity(node_id):
+    """
+    Retrieve JSON-serialized time-series data associated with node_id
+    """
+    return jsonify(get_log_range(node_id, 0, -1))
+@_flask.route('/api/node/activitysum/<node_id>')
+def get_node_activity_agg(node_id):
+    """
+    Retrieve JSON-serialized time-series data associated with node_id
+    """
+    return jsonify(get_log_aggregate(node_id, 0, -1, 'avg', 1000))

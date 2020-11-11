@@ -51,19 +51,21 @@ def detect_and_predict_mask(frame, faceNet, maskNet):
 			(startX, startY) = (max(0, startX), max(0, startY))
 			(endX, endY) = (min(w - 1, endX), min(h - 1, endY))
 
-			# extract the face ROI, convert it from BGR to RGB channel
-			# ordering, resize it to 224x224, and preprocess it
-			face = frame[startY:endY, startX:endX]
-			face = cv2.cvtColor(face, cv2.COLOR_BGR2RGB)
-			face = cv2.resize(face, (224, 224))
-			face = img_to_array(face)
-			face = preprocess_input(face)
+			try:
+				# extract the face ROI, convert it from BGR to RGB channel
+				# ordering, resize it to 224x224, and preprocess it
+				face = frame[startY:endY, startX:endX]
+				face = cv2.cvtColor(face, cv2.COLOR_BGR2RGB)
+				face = cv2.resize(face, (224, 224))
+				face = img_to_array(face)
+				face = preprocess_input(face)
 
-			# add the face and bounding boxes to their respective
-			# lists
-			faces.append(face)
-			locs.append((startX, startY, endX, endY))
-
+				# add the face and bounding boxes to their respective
+				# lists
+				faces.append(face)
+				locs.append((startX, startY, endX, endY))
+			except Exception as ex: 
+				continue
 	# only make a predictions if at least one face was detected
 	if len(faces) > 0:
 		# for faster inference we'll make batch predictions on *all*
@@ -88,8 +90,12 @@ ap.add_argument("-c", "--confidence", type=float, default=0.5,
 	help="minimum probability to filter weak detections")
 args = vars(ap.parse_args())
 
-print("[INFO] Generating TimeSeries instance for Node")
-generate_series('Node0')
+
+try:
+	print("[INFO] Generating TimeSeries instance for Node")
+	generate_series('Node0')
+except Exception as ex:
+	print("[INFO] Not generating series for Node, key already exists.")
 
 # CAFFE
 # load our serialized face detector model from disk 
@@ -110,9 +116,9 @@ vs = VideoStream(src="http://192.168.1.71:49152/video.mjpg?q=100&fps=100&id=0.75
 time.sleep(10.0) # let's see if we can even hit the endpoint over ip in docker
 
 snapshot = int(round(time.time() * 1000))
-heartbeat = 2000
+heartbeat = 950
 
-# counters
+# class cache
 c_masks = 0
 c_faces = 0
 
@@ -121,17 +127,23 @@ while True:
 	
 	# grab the frame from the threaded video stream and resize it
 	# to have a maximum width of 400 pixels
-	frame = vs.read()
-	frame = imutils.resize(frame, width=400)
-	# Pass frame through each net
-	(locs, preds) = detect_and_predict_mask(frame, faceNet, maskNet)
-
+	try:
+		frame = vs.read()
+		frame = imutils.resize(frame, width=400)
+		# Pass frame through each net
+		(locs, preds) = detect_and_predict_mask(frame, faceNet, maskNet)
+	except:
+		print('DEBUG: NULL FRAME/BLOB')
+	
 	# Push counter state to RedisTimeSeries service if heartbeat > delta since last snapshot.
 	t_inner = int(round(time.time() * 1000))
 	if (t_inner-snapshot) > heartbeat:
 		snapshot = int(round(time.time() * 1000))
-		log_event(c_faces, c_masks,'Node0')
-		print('DATA: {}', get_event_log('Node0'))
+		try:
+			log_event(c_faces, c_masks,'Node0')
+			print('DATA: {}', get_event_log('Node0'))
+		except:
+			print('REDIS UPSERT BLOCKED')
 		c_masks = c_faces = 0
 
 	# loop over the detected face locations and their corresponding
@@ -172,8 +184,6 @@ while True:
 	# if the `q` key was pressed, break from the loop
 	if key == ord("q"):
 		break
-
-
 
 print('Range{}', get_log_range('Node0', 0, -1))
 print('Aggregate(AVG)@5000ms {}', get_log_aggregate('Node0', 0, -1, 'avg',5000))
