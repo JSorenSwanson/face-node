@@ -56,7 +56,7 @@ def get_log_range(node, a, b):
     range_mask = tsdb_.range(key_mask, a, b)
     return (range_face, range_mask)
 
-def get_log_aggregate(node, a, b, agg_type='sum', bucket_size=10):
+def get_log_aggregate(node, a, b, agg_type='sum', bucket_size=60000):
     """
     Returns event logs associated with node from Redis as an aggregate across either type 'sum' (default) or 'avg'
     as a range of entries between start of period (a) and end of period (b)

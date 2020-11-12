@@ -1,7 +1,7 @@
 FROM node:lts-alpine
 
 WORKDIR /frontend-app
-COPY package*.json ./
+COPY package.json ./
 COPY *.config.js ./
 RUN npm install
 

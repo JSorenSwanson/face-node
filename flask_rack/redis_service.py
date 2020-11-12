@@ -54,7 +54,9 @@ def get_log_range(node, a, b):
     key_mask = node+"Mask"
     range_face = tsdb_.range(key_face, a, b)
     range_mask = tsdb_.range(key_mask, a, b)
-    return (range_face, range_mask)
+    (faces_x, faces_y) = zip(*range_face)
+    (masks_x, masks_y) = zip(*range_mask)
+    return (faces_x,faces_y,masks_x, masks_y)
 
 def get_log_aggregate(node, a, b, agg_type='sum', bucket_size=60000):
     """
@@ -65,4 +67,6 @@ def get_log_aggregate(node, a, b, agg_type='sum', bucket_size=60000):
     key_mask = node+"Mask"
     range_face = tsdb_.range(key_face, a, b, aggregation_type=agg_type, bucket_size_msec=bucket_size) 
     range_mask = tsdb_.range(key_mask, a, b, aggregation_type=agg_type, bucket_size_msec=bucket_size) 
-    return (range_face, range_mask)
+    (faces_x, faces_y) = zip(*range_face)
+    (masks_x, masks_y) = zip(*range_mask)
+    return (faces_x,faces_y,masks_x, masks_y)

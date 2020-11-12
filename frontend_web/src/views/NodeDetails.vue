@@ -7,11 +7,9 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col cols=6>
-            <v-container fluid>
-                <h5><u>Masks over time @ {{id}}</u></h5>
-                <RandomChart></RandomChart>
-            </v-container>
+          <v-col cols=12>
+                <ActivityChart :nodeID=nodeID></ActivityChart>
+                <h5><u>Masks presence over time @ {{id}}</u></h5>
           </v-col>
         </v-row>
       </v-container>
@@ -19,20 +17,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import RandomChart from '@/components/charts/RandomChart.vue'; // @ is an alias to /src
+import { Component, Prop, Vue } from 'vue-property-decorator';
 
-@Component({
-  components: {
-    RandomChart
-  },
-})
 
 /* Example of instance vars. Ideally this will be retrieved from our store rather than clumsily set here.
    for static demonstration this will do. */ 
-  
+@Component  
 export default class NodeDetails extends Vue {
    id: string = this.$route.params.id
-
+   @Prop(String) readonly nodeID: string | undefined
 }
 </script>

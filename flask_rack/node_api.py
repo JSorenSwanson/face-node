@@ -165,9 +165,20 @@ def get_node_activity(node_id):
     Retrieve JSON-serialized time-series data associated with node_id
     """
     return jsonify(get_log_range(node_id, 0, -1))
-@_flask.route('/api/node/activitysum/<node_id>')
-def get_node_activity_agg(node_id):
+
+@_flask.route('/api/node/activitysum/', methods=['POST'])
+def get_node_activity_agg():
     """
     Retrieve JSON-serialized time-series data associated with node_id
     """
-    return jsonify(get_log_aggregate(node_id, 0, -1, 'avg', 1000))
+    payload = request.get_json()
+    print(payload)
+    if not payload:
+        return {"message":"No input data provided."}, 400
+    try:
+        # This should really be performed using a schema. 
+        # TODO: Why should this be a schema? Refactor as a group. 
+        return jsonify(get_log_aggregate(payload['nodeID'], 0, -1, 'avg', payload['bucketSize']))
+    except: 
+        return {"Bad request"}, 400
+    

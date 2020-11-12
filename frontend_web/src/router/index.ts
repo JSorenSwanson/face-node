@@ -68,7 +68,8 @@ const routes: Array<RouteConfig> = [
   {
     path: '/node_details/:id',
     name: 'Node Details',
-    component: NodeDetails
+    component: NodeDetails,
+    props: true
   },
   {
     path: '/cluster-settings',

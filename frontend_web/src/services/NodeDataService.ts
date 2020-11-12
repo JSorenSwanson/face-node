@@ -3,6 +3,17 @@ import http from '@/plugins/http-common';
 
 // Lightweight class which utilizes Axios base def and base url to perform web requests. 
 class NodeDataService {
+ 
+  // Returns node activity given node_id, bucket_size in ms
+  nodeActivity(nodeid: string, bucketSize: number)
+  {
+    console.log(bucketSize)
+    const payload ={
+      nodeID: nodeid,
+      bucketSize: bucketSize
+    }
+    return http.post(`/node/activitysum/`, payload)
+  }
   // return node data service
   getAll() {
     return http.get("/node");
@@ -11,6 +22,7 @@ class NodeDataService {
   get(nodeid: string, jwt: any) {
     return http.get(`/nodesettings/${nodeid}`,{ headers: { Authorization: `Bearer: ${jwt}` } });
   }
+
   // insert/update node data (form data serialized as JSON)
   create(data: any, jwt: any) {
 
@@ -44,11 +56,7 @@ class NodeDataService {
       });
   }
   
-  // return nodes with metadata contained in search field 
-  filter(query: string)
-  {
-    return http.get(`/node/${query}`)
-  }
+ 
 
   // Some other operations we'll be interested in
   /*

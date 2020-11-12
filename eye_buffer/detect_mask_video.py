@@ -179,7 +179,11 @@ while True:
 	c_faces = n_faces if (n_faces != c_faces) else c_faces
 	
 	# show the output frame
-	cv2.imshow("Frame", frame)
+	try:
+		cv2.imshow("Frame", frame)
+	except:
+		print('DEBUG: NULL FRAME/BLOB')
+	
 	key = cv2.waitKey(1) & 0xFF
 	# if the `q` key was pressed, break from the loop
 	if key == ord("q"):

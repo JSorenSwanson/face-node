@@ -29,14 +29,14 @@
           <!-- Example of nested conditional rendering in Vue. --> 
           <div v-if="n===1 || n===2">
             <div v-if="n===1">
-              <titlecard title="UT Arlington Library" :editable='isAuthenticated'></titlecard>
+              <titlecard title="Soren's Laptop Webcam" nodeID="Node0" :editable='isAuthenticated'></titlecard>
             </div>
             <div v-else>
-              <titlecard title="Mansfield Tattoo" :editable='isAuthenticated'></titlecard>
+              <titlecard title="Mansfield Tattoo" nodeID="Node1" :editable='isAuthenticated'></titlecard>
             </div>
           </div>
           <div v-else>
-            <titlecard title="Example Node"></titlecard>
+            <titlecard nodeID="NodeX" title="Example Node"></titlecard>
           </div>
           </v-col>
         </v-row>

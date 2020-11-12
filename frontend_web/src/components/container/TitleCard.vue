@@ -23,8 +23,7 @@
         </v-row>
          <v-spacer></v-spacer>
         <v-row>
-          
-          <ComplianceChartCompact></ComplianceChartCompact>
+          <ActivityChartCompact></ActivityChartCompact>
         </v-row>
       </v-container>
   </v-card>
@@ -33,24 +32,29 @@
 
 <script lang="ts">
   import Vue from 'vue'
-  import ComplianceChartCompact from '@/components/charts/ComplianceChartCompact.vue'; 
+  import ActivityChartCompact from '@/components/charts/ActivityChartCompact.vue'; 
 
 
   // Example of props. Here, our static component takes id, title & height as example prop data fields. 
   export default Vue.extend({
     components:{
-      ComplianceChartCompact
+      ActivityChartCompact
     },
     methods:{
       redirectEdit() {
           this.$router.push({ name: 'Settings', params: { id: this.title } })
       },
         redirectDetail() {
-            this.$router.push({ name: 'Node Details', params: { id: this.title } })
+            this.$router.push({ name: 'Node Details', params: { id: this.title, nodeID: this.nodeID } })
         }
     },
     name: 'TitleCard',
     props:{
+      nodeID:{
+        type: String, 
+        required: true, 
+        default: "Node0"
+      },
       editable:{
         type: Boolean,
         required: false, 
