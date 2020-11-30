@@ -31,4 +31,4 @@ WORKDIR /buffer
 COPY . .
 # Install container py package dependencies
 RUN pip3 install -r requirements.txt
-CMD ["python3","detect_mask_video.py"]
+CMD ["python3","buffer_ingress.py"]

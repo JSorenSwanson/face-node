@@ -27,8 +27,12 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 @Component
 export default class ActivityChart extends Vue {
     
-    id: string = this.$route.params.id
-    @Prop(String) readonly nodeID!: string 
+    // Define component props
+    @Prop(Number) readonly nodeID!: number 
+    @Prop(String) readonly title!: string 
+
+    // store interval so that we can clear polling when this component isn't mounted 
+    pollInterval: any
     
     // Ideally controls would be disjointed from this component
     bucket = { label: 'Bucket Size (MS): ', val: 45, color: 'blue' }
@@ -46,7 +50,7 @@ export default class ActivityChart extends Vue {
     };
     
     private layout = {
-        title: "Time-Series data for " + this.id + " (" + this.nodeID+ ")",
+        title: "Time-Series data for " + this.title + " (Node" + this.nodeID+ ")",
         xaxis: {
           title: "Time",
           titlefont: {
@@ -96,13 +100,17 @@ export default class ActivityChart extends Vue {
     }
   //*/
 
-    // Hook into component mount lifecycle
+    // Component lifecycle hooks
+    // Before this component is mounted into application we will invoke getNode and poll getNode 
     mounted() {
        this.getNode()
-       window.setInterval(() => {
+       this.pollInterval = window.setInterval(() => {
         this.getNode()
   }, 3000)
-       
+    }
+   // Clear interval to prevent extraneous API calls outside of view. 
+    beforeDestroy(){
+      clearInterval(this.pollInterval)
     }
 }
 

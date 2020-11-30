@@ -88,12 +88,17 @@ ap.add_argument("-m", "--model", type=str,
 	help="path to trained face mask detector model")
 ap.add_argument("-c", "--confidence", type=float, default=0.5,
 	help="minimum probability to filter weak detections")
-args = vars(ap.parse_args())
+ap.add_argument("-s", "--stream", type=str,
+	help="video ingest endpoint")
+ap.add_argument("-n", "--node", type=str,
+	help="node key (id) – used to store timeseries data via redis service")
 
+args = vars(ap.parse_args())
+node_ = args["node"]
 
 try:
 	print("[INFO] Generating TimeSeries instance for Node")
-	generate_series('Node0')
+	generate_series(node_)
 except Exception as ex:
 	print("[INFO] Not generating series for Node, key already exists.")
 
@@ -112,7 +117,8 @@ maskNet = load_model(args["model"])
 # initialize the video stream and allow the camera sensor to warm up
 print("[INFO] starting video stream...")
 ###### If you'd like to test this with a camera attached to your machine, use (-1/0 (int)) – broken in WSL 
-vs = VideoStream(src="http://192.168.1.71:49152/video.mjpg?q=100&fps=100&id=0.7587060853631462&r=1599663296819").start()
+print("Stream:: " + args["stream"])
+vs = VideoStream(src=args["stream"]).start()
 time.sleep(10.0) # let's see if we can even hit the endpoint over ip in docker
 
 snapshot = int(round(time.time() * 1000))
@@ -140,8 +146,8 @@ while True:
 	if (t_inner-snapshot) > heartbeat:
 		snapshot = int(round(time.time() * 1000))
 		try:
-			log_event(c_faces, c_masks,'Node0')
-			print('DATA: {}', get_event_log('Node0'))
+			log_event(c_faces, c_masks, node_)
+			print('[{}] DATA: {}', node_, get_event_log(node_))
 		except:
 			print('REDIS UPSERT BLOCKED')
 		c_masks = c_faces = 0
@@ -180,7 +186,7 @@ while True:
 	
 	# show the output frame
 	try:
-		cv2.imshow("Frame", frame)
+		cv2.imshow(("NODE [" + node_ + "]") , frame)
 	except:
 		print('DEBUG: NULL FRAME/BLOB')
 	
@@ -189,8 +195,8 @@ while True:
 	if key == ord("q"):
 		break
 
-print('Range{}', get_log_range('Node0', 0, -1))
-print('Aggregate(AVG)@5000ms {}', get_log_aggregate('Node0', 0, -1, 'avg',5000))
-print('Aggregate(SUM)@5000ms {}', get_log_aggregate('Node0', 0, -1, 'sum',5000))
+print('Range{}', get_log_range(node_, 0, -1))
+print('Aggregate(AVG)@5000ms {}', get_log_aggregate(node_, 0, -1, 'avg',5000))
+print('Aggregate(SUM)@5000ms {}', get_log_aggregate(node_, 0, -1, 'sum',5000))
 cv2.destroyAllWindows()
 vs.stop()

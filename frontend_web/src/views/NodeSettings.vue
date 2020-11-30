@@ -173,7 +173,7 @@ export default class NodeSettings extends Vue {
         .then((response) => {
           // Check your console -- our response is a JSON object. 
           // Chrome allows you to inspect this dumped mem. 
-          console.log(response);
+          console.log(response.data);
           this.syncPromise = false;
           // Set our fields 
           // This should later be part of a class method in domain objects

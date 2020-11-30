@@ -98,10 +98,7 @@ class NodeSettings(pdb.Model):
 
     def VERB(self):
         return {
-            'resolution': {
-                'pixelsX':self.pixelsX,
-                'pixelsY':self.pixelsY
-                },
+            'resolution': self.resolution,
             'ip': self.ip,
             'fps': self.fps, 
             'confidence': self.confidence

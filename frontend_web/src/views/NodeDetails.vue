@@ -3,13 +3,13 @@
       <v-container>
         <v-row>
           <v-col cols=12>
-            <h2>{{id}}</h2>
+            <h2>{{title}}</h2>
           </v-col>
         </v-row>
         <v-row>
           <v-col cols=12>
-                <ActivityChart :nodeID=nodeID></ActivityChart>
-                <h5><u>Masks presence over time @ {{id}}</u></h5>
+                <ActivityChart :title=title :nodeID=nodeID></ActivityChart>
+                <h5><u>Masks presence over time @ {{title}}</u></h5>
           </v-col>
         </v-row>
       </v-container>
@@ -24,7 +24,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
    for static demonstration this will do. */ 
 @Component  
 export default class NodeDetails extends Vue {
-   id: string = this.$route.params.id
-   @Prop(String) readonly nodeID: string | undefined
+   @Prop(Number) readonly nodeID: number | undefined
+   @Prop(String) readonly title: string | undefined
 }
 </script>

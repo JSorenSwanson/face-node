@@ -18,9 +18,9 @@ def generate_series(node):
     Generates 2 timeseries keys (linkedlist heads) w/ Key=node{mask|face}
     """
     
-    key_face = node+"Face"
-    key_mask = node+"Mask"
-
+    key_face = "F"+str(node)
+    key_mask = "M"+str(node)
+    print("Creating (kf {}, km {})", key_face, key_mask)
     tsdb_.create(key_face, labels={'Time':'Faces'})
     tsdb_.create(key_mask, labels={'Time':'Masks'})
 
@@ -30,8 +30,8 @@ def log_event(faces, masks, node):
     Assumes Mask & Face TimeSeries have been generated.
     """
     timestamp = int(time.time())
-    key_face = node+"Face"
-    key_mask = node+"Mask"
+    key_face = "F"+str(node)
+    key_mask = "M"+str(node)
 
     tsdb_.add(key_face, timestamp, faces)
     tsdb_.add(key_mask, timestamp, masks)
@@ -40,8 +40,8 @@ def get_event_log(node):
     """
     Returns event logs associated with node from Redis
     """
-    key_face = node+"Face"
-    key_mask = node+"Mask"
+    key_face = "F"+str(node)
+    key_mask = "M"+str(node)
 
     return (tsdb_.get(key_face), tsdb_.get(key_mask))
 
@@ -50,8 +50,8 @@ def get_log_range(node, a, b):
     Returns event logs associated with node from Redis as a range of entries
     between start of period (a) and end of period (b)
     """
-    key_face = node+"Face"
-    key_mask = node+"Mask"
+    key_face = "F"+str(node)
+    key_mask = "M"+str(node)
     range_face = tsdb_.range(key_face, a, b)
     range_mask = tsdb_.range(key_mask, a, b)
     return (range_face, range_mask)
@@ -61,8 +61,8 @@ def get_log_aggregate(node, a, b, agg_type='sum', bucket_size=60000):
     Returns event logs associated with node from Redis as an aggregate across either type 'sum' (default) or 'avg'
     as a range of entries between start of period (a) and end of period (b)
     """
-    key_face = node+"Face"
-    key_mask = node+"Mask"
+    key_face = "F"+str(node)
+    key_mask = "M"+str(node)
     range_face = tsdb_.range(key_face, a, b, aggregation_type=agg_type, bucket_size_msec=bucket_size) 
     range_mask = tsdb_.range(key_mask, a, b, aggregation_type=agg_type, bucket_size_msec=bucket_size) 
     return (range_face, range_mask)

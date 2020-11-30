@@ -172,7 +172,6 @@ def get_node_activity_agg():
     Retrieve JSON-serialized time-series data associated with node_id
     """
     payload = request.get_json()
-    print(payload)
     if not payload:
         return {"message":"No input data provided."}, 400
     try:
@@ -180,5 +179,5 @@ def get_node_activity_agg():
         # TODO: Why should this be a schema? Refactor as a group. 
         return jsonify(get_log_aggregate(payload['nodeID'], 0, -1, 'avg', payload['bucketSize']))
     except: 
-        return {"Bad request"}, 400
+        return {"message":"Bad key"}, 400
     

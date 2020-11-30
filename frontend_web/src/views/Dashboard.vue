@@ -22,11 +22,16 @@
     </v-toolbar>
         <v-row>
           <v-col
+          v-for="node in nodeList" :key="node.id" cols=4>
+          <title-card :title='node.name' :editable='isAuthenticated' :id="node.nodeID"></title-card>
+          </v-col>
+          <!--
+          <v-col
             v-for="n in 9"
             :key="n"
             cols=4
           >
-          <!-- Example of nested conditional rendering in Vue. --> 
+         
           <div v-if="n===1 || n===2">
             <div v-if="n===1">
               <titlecard title="Soren's Laptop Webcam" nodeID="Node0" :editable='isAuthenticated'></titlecard>
@@ -39,6 +44,7 @@
             <titlecard nodeID="NodeX" title="Example Node"></titlecard>
           </div>
           </v-col>
+          <-->
         </v-row>
       </v-container>
   </div>
@@ -47,15 +53,22 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import titlecard from '@/components/container/TitleCard.vue';
+import TitleCard from '../components/container/TitleCard.vue';
 
 @Component({
   components: {
-    titlecard
+    TitleCard
   },
   computed:{
     isAuthenticated: function(){
       return this.$store.getters.authenticated;
+    }, 
+    nodeList: function(){
+      return this.$store.getters.getNodes;
     }
+  },
+  mounted: async function() {
+    await this.$store.dispatch('retrieveNodes'); 
   }
 })
 export default class Dashboard extends Vue {}

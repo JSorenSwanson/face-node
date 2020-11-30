@@ -5,7 +5,7 @@ import http from '@/plugins/http-common';
 class NodeDataService {
  
   // Returns node activity given node_id, bucket_size in ms
-  nodeActivity(nodeid: string, bucketSize: number)
+  nodeActivity(nodeid: number, bucketSize: number)
   {
     console.log(bucketSize)
     const payload ={

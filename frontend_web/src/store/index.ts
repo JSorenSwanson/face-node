@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import UserDataService from '@/services/UserDataService'; 
+import NodeDataService from '@/services/NodeDataService';
+
 import { isValidJwt } from '@/utils/GlobalUtils'
 
 Vue.use(Vuex)
@@ -9,7 +11,7 @@ Vue.config.devtools = true
 export default new Vuex.Store({
   state: {
     user: {},
-    nodeEndpoints: {},
+    nodes: {},
     jwt: ''
   },
   mutations: {
@@ -19,6 +21,10 @@ export default new Vuex.Store({
     setJwtToken (state, payload) {
       localStorage.token = payload.jwt.token
       state.jwt = payload.jwt
+    }, 
+    setNodeEndpoints(state, payload){
+      console.log('SET:\n' + payload)
+      state.nodes = payload
     }
   },
   actions: {
@@ -59,6 +65,10 @@ export default new Vuex.Store({
             authenticated:false
           };
         })
+    }, 
+    async retrieveNodes (context){
+      const nodeData = await NodeDataService.getAll();
+      context.commit('setNodeEndpoints', nodeData.data);
     }
   },
   getters:{
@@ -68,6 +78,10 @@ export default new Vuex.Store({
     },
     getJWT: (state) => {
       return isValidJwt(state.jwt) == true ? state.jwt : null
+    }, 
+    getNodes: (state) => 
+    {
+      return state.nodes;
     }
   }
  

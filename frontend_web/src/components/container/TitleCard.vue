@@ -42,19 +42,14 @@
     },
     methods:{
       redirectEdit() {
-          this.$router.push({ name: 'Settings', params: { id: this.title } })
+          this.$router.push({ name: 'Settings', params: { id: this.id } })
       },
         redirectDetail() {
-            this.$router.push({ name: 'Node Details', params: { id: this.title, nodeID: this.nodeID } })
+            this.$router.push({ name: 'Node Details', params: { title: this.title, nodeID: this.id } })
         }
     },
     name: 'TitleCard',
     props:{
-      nodeID:{
-        type: String, 
-        required: true, 
-        default: "Node0"
-      },
       editable:{
         type: Boolean,
         required: false, 
@@ -67,7 +62,7 @@
       },  
       id: {
         type: Number,
-        required: false
+        required: true
       }, 
       height: {
         type: Number,
