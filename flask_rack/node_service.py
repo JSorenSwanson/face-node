@@ -3,6 +3,7 @@ Wraps granular functions in redis_service, postgres_service for node domain enti
 """
 import json
 import sqlalchemy
+from flask import jsonify
 from postgres_service import add_entity, delete_entity, get_entity_by_id, get_all_entities
 from models import NodeObject, NodeSettings, pdb
 from schemas import NodeSchema, NodeSettingsSchema
@@ -37,11 +38,18 @@ def create_node_settings(settings):
 
     return node_data.VERB()
 
+def get_node_endpoints():
+    """
+    Retrieve representation of node endpoints as JSON serialized list 
+    """
+    entities = get_all_entities(NodeObject)
+    return jsonify([NodeObject.DTOF(e, e.nodeSettings) for e in entities])
 def get_nodes():
     """
     Retrieves all Node entries as JSON serialized list
     """
-    return get_all_entities(NodeObject)
+    entities = get_all_entities(NodeObject)
+    return jsonify([NodeObject.DTO(e) for e in entities])
 
 def get_node(node_id):
     """

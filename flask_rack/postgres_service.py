@@ -36,8 +36,6 @@ def get_entity_by_id(cls, id_pk):
 
 def get_all_entities(cls):
     """
-    Generic return all entities of class cls as JSON serialized list.
-    Requires cls to have implemented serialize method.
+    Generic return all entities of class cls
     """
-    result = cls.query.all()
-    return jsonify([cls.DTO(i) for i in result])
+    return cls.query.all()

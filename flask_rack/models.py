@@ -82,6 +82,11 @@ class NodeObject(pdb.Model):
             'description': self.description,
             'location': self.location
         }
+    def DTOF(self, settings):
+        return {
+            'nodeID': self.id,
+            'ingest_url': settings.ip
+        }
 
 class NodeSettings(pdb.Model):
     """

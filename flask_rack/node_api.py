@@ -16,7 +16,8 @@ from schemas import UserSchema, LoginSchema
 from marshmallow import ValidationError
 
 # Import functions from service wrappers
-from node_service import create_node_settings, get_node_settings, get_node, get_nodes
+from node_service import create_node_settings, get_node_settings, get_node, get_nodes, get_node_endpoints
+
 from user_service import add_user
 from redis_service import get_log_range, get_log_aggregate
 
@@ -142,6 +143,12 @@ def get_settings(node_id):
     """
     val = get_node_settings(node_id)
     return val
+@_flask.route('/api/nodesettings/', methods=['GET'])
+def get_all_node_endpoints():
+    """
+    Retrieve a JSON-serialized list of Node entities w/ related settings
+    """
+    return get_node_endpoints()
 
 @_flask.route('/api/node/', methods=['GET'])
 def get_all_nodes():
@@ -149,7 +156,6 @@ def get_all_nodes():
     Retrieve a JSON-serialized list of Node entities from postgres service using ORM framework
     """
     return get_nodes()
-
 
 @_flask.route('/api/node/<node_id>')
 def get_node_byid(node_id):
