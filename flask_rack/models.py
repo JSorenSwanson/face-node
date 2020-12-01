@@ -97,7 +97,7 @@ class NodeSettings(pdb.Model):
  
     id = pdb.Column(pdb.Integer, primary_key=True)
     resolution = pdb.Column(pdb.String(15))
-    ip = pdb.Column(pdb.String(15), nullable=False, unique=True)
+    ip = pdb.Column(pdb.String(1000), nullable=False, unique=True)
     fps = pdb.Column(pdb.Integer)
     confidence = pdb.Column(pdb.Integer)
 

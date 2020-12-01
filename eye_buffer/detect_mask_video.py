@@ -14,6 +14,7 @@ import imutils
 import time
 import cv2
 import os
+import sys 
 
 def detect_and_predict_mask(frame, faceNet, maskNet):
 	# grab the dimensions of the frame and then construct a blob
@@ -127,6 +128,8 @@ heartbeat = 950
 # class cache
 c_masks = 0
 c_faces = 0
+# frame read failure
+c_failures = 0
 
 # loop over the frames from the video stream
 while True:
@@ -140,16 +143,23 @@ while True:
 		(locs, preds) = detect_and_predict_mask(frame, faceNet, maskNet)
 	except:
 		print('DEBUG: NULL FRAME/BLOB')
-	
+		c_failures = c_failures + 1
+		if c_failures > 7:
+			sys.exit()
+		else:
+			continue
+
 	# Push counter state to RedisTimeSeries service if heartbeat > delta since last snapshot.
 	t_inner = int(round(time.time() * 1000))
 	if (t_inner-snapshot) > heartbeat:
 		snapshot = int(round(time.time() * 1000))
 		try:
 			log_event(c_faces, c_masks, node_)
+			c_failures = 0
 			print('[{}] DATA: {}', node_, get_event_log(node_))
 		except:
 			print('REDIS UPSERT BLOCKED')
+			c_failures = 0
 		c_masks = c_faces = 0
 
 	# loop over the detected face locations and their corresponding
